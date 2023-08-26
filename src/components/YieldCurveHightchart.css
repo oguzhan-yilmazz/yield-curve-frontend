@@ -1,0 +1,47 @@
+/* Ana konteyner için stil */
+.yieldcurve {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+}
+.yieldcurve .dates {
+  width: 200px;
+}
+
+.yieldcurve .dates .interpolatedData {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.yieldcurve .graph {
+  width: 1000px;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Form elemanları için stil */
+label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+input[type="date"] {
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Interpolasyon sonuçları için stil */
+strong {
+  display: block;
+  margin-top: 20px;
+  font-size: 18px;
+}
