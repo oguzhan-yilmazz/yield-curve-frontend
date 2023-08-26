@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import moment from "moment";
+import axios from "axios";
 
 function linearSplineInterpolation(x, x0, x1, y0, y1) {
   return y0 + (y1 - y0) * ((x - x0) / (x1 - x0));
 }
 
 const YieldCurve = () => {
+  /*
   const [businessDate, setBusinessDate] = useState("2000-01-01");
   const [targetDate, setTargetDate] = useState("2000-06-01");
   const [interpolatedYield, setInterpolatedYield] = useState(null);
@@ -19,24 +21,33 @@ const YieldCurve = () => {
     8.9425, 9.4027,
   ];
 
-  const maturities2 = [
-    "1M",
-    "3M",
-    "6M",
-    "1Y",
-    "2Y",
-    "3Y",
-    "5Y",
-    "7Y",
-    "10Y",
-    "20Y",
-    "30Y",
-  ];
   const yieldToMaturity = [
     15.2643, 11.5097, 10.5723, 16.4457, 12.1326, 14.6857, 13.6542, 12.4703,
     15.1844, 14.9057, 13.5159, 14.5084, 13.7897, 13.8858, 12.4089, 15.2211,
     13.7252, 14.2092, 13.0775, 14.174, 13.438,
   ];
+  */
+  const [businessDate, setBusinessDate] = useState("2000-01-01");
+  const [targetDate, setTargetDate] = useState("2000-06-01");
+  const [interpolatedYield, setInterpolatedYield] = useState(null);
+  const [maturities, setMaturities] = useState([]);
+  const [yieldToMaturity, setYieldToMaturity] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/yieldcurve/calculate")
+      .then((response) => {
+        setMaturities(response.data.maturities);
+
+        setYieldToMaturity(response.data.yields);
+      })
+      .catch((error) => {
+        console.log("Error fetching data:", error);
+      });
+  }, []);
+
+  console.log("maturities: " + maturities);
+  console.log("yieldToMaturity: " + yieldToMaturity);
 
   const seriesData = maturities.map((maturity, index) => {
     return { x: maturity, y: yieldToMaturity[index] };
@@ -73,7 +84,9 @@ const YieldCurve = () => {
   const options = {
     chart: {
       height: 680, // Yükseklik 700px olarak ayarlandı
-      width: 1000, // Genişlik 1000px olarak ayarlandı
+      width: 860, // Genişlik 1000px olarak ayarlandı
+      borderRadius: 10, // Kenar yuvarlaklığı 10px olarak ayarland
+      backgroundColor: "#EFF8F8", // Arka plan rengi ayarlandı
     },
     title: {
       text: `Yield Curve starting from ${businessDate}`,
@@ -82,7 +95,7 @@ const YieldCurve = () => {
       title: {
         text: "Maturity (years)",
       },
-      categories: maturities2,
+      categories: maturities,
     },
     yAxis: {
       title: {

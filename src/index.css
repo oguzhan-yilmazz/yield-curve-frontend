@@ -1,3 +1,4 @@
+/*
 .container {
   width: 900px;
   height: 900px;
@@ -13,4 +14,11 @@
   flex-direction: flex;
   align-items: center;
   justify-content: center;
+  background-color: blue;
+}
+*/
+
+.App {
+  width: 100%;
+  margin-top: 40px;
 }
