@@ -35,7 +35,8 @@ const YieldCurve = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/yieldcurve/calculate")
+      //.get("http://localhost:8080/api/yieldcurve/calculate")
+      .get("https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate") // kendi apime istek atıyorum
       .then((response) => {
         setMaturities(response.data.maturities);
 
