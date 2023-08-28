@@ -27,6 +27,36 @@ const YieldCurve = () => {
     13.7252, 14.2092, 13.0775, 14.174, 13.438,
   ];
   */
+  const renderInterpolatedData = () => {
+    if (targetMaturity > maturities[maturities.length - 1]) {
+      return (
+        <div className="interpolatedData">
+          <strong>Aralığın dışında bir tarih girdiniz!</strong>
+          <strong>son tarih: {maturities[maturities.length - 1]}</strong>
+        </div>
+      );
+    } else if (targetMaturity < maturities[0]) {
+      return (
+        <div className="interpolatedData">
+          <strong>Aralığın dışında bir tarih girdiniz!</strong>
+          <strong>ilk tarih: {maturities[0]}</strong>
+        </div>
+      );
+    } else if (interpolatedYield !== null) {
+      return (
+        <div className="interpolatedData">
+          <strong>
+            Interpolated Yield for Target Date: {interpolatedYield.toFixed(2)}%
+            <h1> </h1>
+            Maturity : {targetMaturity} years.hi
+          </strong>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const [businessDate, setBusinessDate] = useState("2000-01-01");
   const [targetDate, setTargetDate] = useState("2000-06-01");
   const [interpolatedYield, setInterpolatedYield] = useState(null);
@@ -84,8 +114,9 @@ const YieldCurve = () => {
 
   const options = {
     chart: {
+      Animation: true,
       height: 680, // Yükseklik 700px olarak ayarlandı
-      width: 860, // Genişlik 1000px olarak ayarlandı
+      width: 960, // Genişlik 1000px olarak ayarlandı
       borderRadius: 10, // Kenar yuvarlaklığı 10px olarak ayarland
       backgroundColor: "#EFF8F8", // Arka plan rengi ayarlandı
     },
@@ -102,6 +133,7 @@ const YieldCurve = () => {
       title: {
         text: "Yield to Maturity (%)",
       },
+      categories: yieldToMaturity,
     },
     series: [
       {
@@ -129,7 +161,7 @@ const YieldCurve = () => {
   return (
     <div className="yieldcurve">
       <div className="dates">
-        <div>
+        <div className="businessDateBox">
           <label>Business Date: </label>
           <input
             type="date"
@@ -137,7 +169,7 @@ const YieldCurve = () => {
             onChange={(e) => setBusinessDate(e.target.value)}
           />
         </div>
-        <div>
+        <div className="TargetDateBox">
           <label>Target Date: </label>
           <input
             type="date"
@@ -148,22 +180,8 @@ const YieldCurve = () => {
         <div>
           <label>Results: </label>
         </div>
-        {
-          targetMaturity > maturities[maturities.length - 1] ? (
-            <div className="interpolatedData">
-              <strong>Aralığın dışında bir değer girdiniz!</strong>
-            </div>
-          ) : null // Eğer koşul sağlanmıyorsa, hiçbir şey render etme
-        }
-        {interpolatedYield !== null && (
-          <div className="interpolatedData">
-            <strong>
-              Interpolated Yield for Target Date: {interpolatedYield.toFixed(2)}{" "}
-              %<h1> </h1>
-              Maturity : {targetMaturity} years.hi
-            </strong>
-          </div>
-        )}
+
+        {renderInterpolatedData()}
       </div>
       <div className="graph">
         <HighchartsReact highcharts={Highcharts} options={options} />

@@ -17,10 +17,14 @@
 
 .yieldcurve .dates .interpolatedData {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   padding: 5px;
   margin: 10px;
   background-color: white;
+}
+
+.yieldcurve .dates .businessDateBox {
+  border-radius: 10px;
 }
 
 .yieldcurve .graph {
