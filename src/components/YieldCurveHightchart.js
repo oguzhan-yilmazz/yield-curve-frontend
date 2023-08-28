@@ -148,6 +148,14 @@ const YieldCurve = () => {
         <div>
           <label>Results: </label>
         </div>
+        {
+          targetMaturity >
+            yieldToMaturity[yieldToMaturity.length - 1](
+              <div className="interpolatedData">
+                <strong>Aralığın dışında bir değer girdiniz!</strong>
+              </div>
+            ) // targetMaturity, yieldToMaturity[yieldToMaturity.length-1]'den büyükse
+        }
         {interpolatedYield !== null && (
           <div className="interpolatedData">
             <strong>
