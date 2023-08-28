@@ -149,7 +149,7 @@ const YieldCurve = () => {
           <label>Results: </label>
         </div>
         {
-          targetMaturity > yieldToMaturity[yieldToMaturity.length - 1] ? (
+          targetMaturity > maturities[maturities.length - 1] ? (
             <div className="interpolatedData">
               <strong>Aralığın dışında bir değer girdiniz!</strong>
             </div>
