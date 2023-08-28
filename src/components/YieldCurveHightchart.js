@@ -161,7 +161,7 @@ const YieldCurve = () => {
             <strong>
               Interpolated Yield for Target Date: {interpolatedYield.toFixed(2)}{" "}
               %<h1> </h1>
-              Maturity : {targetMaturity} years.
+              Maturity : {targetMaturity} years.hi
             </strong>
           </div>
         )}
