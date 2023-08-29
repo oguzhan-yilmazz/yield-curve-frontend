@@ -77,6 +77,24 @@ const YieldCurve = () => {
       });
   }, []);
 
+  useEffect(() => {
+    axios
+      //.get("http://localhost:8080/api/yieldcurve/calculate")
+      .get(
+        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity",
+        {
+          withCredentials: true,
+        }
+      ) // kendi apime istek atıyorum
+      .then((response) => {
+        //setBusinessDate(response.data.maturityDates);
+        console.log("hata kontrol" + response);
+      })
+      .catch((error) => {
+        console.log("Error fetching data:", error);
+      });
+  }, []);
+
   console.log("maturities: " + maturities);
   console.log("yieldToMaturity: " + yieldToMaturity);
 
@@ -114,7 +132,7 @@ const YieldCurve = () => {
 
   const options = {
     chart: {
-      Animation: true,
+      // Animation: true,
       height: 680, // Yükseklik 700px olarak ayarlandı
       width: 960, // Genişlik 1000px olarak ayarlandı
       borderRadius: 10, // Kenar yuvarlaklığı 10px olarak ayarland
