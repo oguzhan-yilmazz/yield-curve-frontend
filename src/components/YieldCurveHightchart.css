@@ -27,6 +27,22 @@
   border-radius: 10px;
 }
 
+/*
+.yieldcurve .dates .RangeSelectBox {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+*/
+.yieldcurve .dates .RangeSelectBox .selectBox {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left: 10px;
+  height: 35px;
+  width: 132px;
+  margin-top: -6px;
+  margin-bottom: 7px;
+}
+
 .yieldcurve .graph {
   display: flex;
   flex-direction: column;
@@ -54,4 +70,45 @@ strong {
   display: block;
   margin-top: 20px;
   font-size: 18px;
+}
+
+/* Responsive kısım */
+
+/* Ekran genişliği 768px ve altı için */
+@media (max-width: 768px) {
+  .yieldcurve {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .yieldcurve .dates,
+  .yieldcurve .graph {
+    width: 100%;
+  }
+
+  .yieldcurve .dates .RangeSelectBox .selectBox,
+  .yieldcurve .dates .businessDateBox input[type="date"],
+  .yieldcurve .dates .TargetDateBox input[type="date"] {
+    width: 100%;
+  }
+}
+
+/* Ekran genişliği 480px ve altı için */
+@media (max-width: 480px) {
+  .yieldcurve {
+    padding: 5px;
+  }
+
+  .yieldcurve .dates {
+    padding: 5px;
+  }
+
+  .yieldcurve .dates .RangeSelectBox .selectBox,
+  .yieldcurve .dates .businessDateBox input[type="date"],
+  .yieldcurve .dates .TargetDateBox input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

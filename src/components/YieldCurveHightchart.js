@@ -27,6 +27,7 @@ const YieldCurve = () => {
     13.7252, 14.2092, 13.0775, 14.174, 13.438,
   ];
   */
+
   const renderInterpolatedData = () => {
     if (targetMaturity > maturities[maturities.length - 1]) {
       return (
@@ -62,11 +63,26 @@ const YieldCurve = () => {
   const [interpolatedYield, setInterpolatedYield] = useState(null);
   const [maturities, setMaturities] = useState([]);
   const [yieldToMaturity, setYieldToMaturity] = useState([]);
+  const [seriesData, setSeriesData] = useState([]); // Yeni state değişkeni
+  const [lowTargetYear, setLowTargetYear] = useState(null);
+  const [highTargetYear, setHighTargetYear] = useState(null);
+
+  const handleRangeChange = (e) => {
+    if (e.target.value === "All") {
+      setLowTargetYear(null);
+      setHighTargetYear(null);
+    } else {
+      const [low, high] = e.target.value.split("-").map(Number);
+      setLowTargetYear(low);
+      setHighTargetYear(high);
+    }
+  };
 
   useEffect(() => {
+    //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate") // kendi apime istek atıyorum
+      .get("http://localhost:8080/api/yieldcurve/calculate") // kendi apime istek atıyorum
       .then((response) => {
         setMaturities(response.data.maturities);
 
@@ -78,29 +94,57 @@ const YieldCurve = () => {
   }, []);
 
   useEffect(() => {
+    //"https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity"
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get(
-        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity",
-        {
-          withCredentials: true,
-        }
-      ) // kendi apime istek atıyorum
+      .get("http://localhost:8080/api/yieldcurve/calculateMaturity", {
+        withCredentials: true,
+      }) // kendi apime istek atıyorum
       .then((response) => {
         //setBusinessDate(response.data.maturityDates);
-        console.log("hata kontrol" + response);
+        const maturityDates = JSON.stringify(response.data.maturityDates);
+        const maturityDates2 = JSON.parse(maturityDates);
+        const firstMaturityDate = maturityDates2[0];
+        setBusinessDate(firstMaturityDate); // business date tarihini apiden çekiyoruz.
+        console.log("hata kontrol" + firstMaturityDate);
       })
       .catch((error) => {
         console.log("Error fetching data:", error);
       });
   }, []);
 
+  useEffect(() => {
+    let newSeriesData;
+
+    if (lowTargetYear == null && highTargetYear == null) {
+      newSeriesData = maturities.map((maturity, index) => {
+        return { x: maturity, y: yieldToMaturity[index] };
+      });
+    } else {
+      const newMaturities = [];
+      const newYieldToMaturity = [];
+      for (let i = 0; i < maturities.length; i++) {
+        if (maturities[i] >= lowTargetYear && maturities[i] <= highTargetYear) {
+          newMaturities.push(maturities[i]);
+          newYieldToMaturity.push(yieldToMaturity[i]);
+        }
+      }
+      newSeriesData = newMaturities.map((maturity, index) => {
+        return { x: maturity, y: newYieldToMaturity[index] };
+      });
+    }
+
+    setSeriesData(newSeriesData);
+  }, [maturities, yieldToMaturity, lowTargetYear, highTargetYear]);
+
   console.log("maturities: " + maturities);
   console.log("yieldToMaturity: " + yieldToMaturity);
 
-  const seriesData = maturities.map((maturity, index) => {
+  /*
+  seriesData = maturities.map((maturity, index) => {
     return { x: maturity, y: yieldToMaturity[index] };
   });
+  */
 
   const targetMaturity = moment(targetDate).diff(
     moment(businessDate),
@@ -145,13 +189,13 @@ const YieldCurve = () => {
       title: {
         text: "Maturity (years)",
       },
-      categories: maturities,
+      //categories: maturities,
     },
     yAxis: {
       title: {
         text: "Yield to Maturity (%)",
       },
-      categories: yieldToMaturity,
+      //categories: yieldToMaturity,
     },
     series: [
       {
@@ -179,12 +223,26 @@ const YieldCurve = () => {
   return (
     <div className="yieldcurve">
       <div className="dates">
+        <div className="RangeSelectBox">
+          <label>Select Range: </label>
+          <p> </p>
+          <select onChange={handleRangeChange} className="selectBox">
+            <option value="">Select Range</option>
+            <option value="All">All</option>
+            <option value="0-3">0-3</option>
+            <option value="3-5">3-5</option>
+            <option value="5-10">5-10</option>
+            <option value="10-20">10-20</option>
+          </select>
+          {/* Diğer UI elemanları */}
+        </div>
         <div className="businessDateBox">
           <label>Business Date: </label>
           <input
             type="date"
             value={businessDate}
-            onChange={(e) => setBusinessDate(e.target.value)}
+            //onChange={(e) => setBusinessDate(e.target.value)}
+            readOnly // businessDate değiştirelemez olarak ayarlandı
           />
         </div>
         <div className="TargetDateBox">
@@ -198,7 +256,6 @@ const YieldCurve = () => {
         <div>
           <label>Results: </label>
         </div>
-
         {renderInterpolatedData()}
       </div>
       <div className="graph">
