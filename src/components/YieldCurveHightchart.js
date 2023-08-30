@@ -85,7 +85,7 @@ const YieldCurve = () => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("http://localhost:8080/api/yieldcurve/calculate") // kendi apime istek atıyorum
+      .get("https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate") // kendi apime istek atıyorum
       .then((response) => {
         setMaturities(response.data.maturities);
 
@@ -100,7 +100,9 @@ const YieldCurve = () => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("http://localhost:8080/api/yieldcurve/calculateMaturity") // kendi apime istek atıyorum
+      .get(
+        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity"
+      ) // kendi apime istek atıyorum
       .then((response) => {
         setBusinessDate(response.data.maturityDates[0]);
         console.log("apiden gelen veri:", response.data.maturityDates[0]);
