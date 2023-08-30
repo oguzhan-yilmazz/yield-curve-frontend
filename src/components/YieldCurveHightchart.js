@@ -4,6 +4,9 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import moment from "moment";
 import axios from "axios";
+import AccessibilityModule from "highcharts/modules/accessibility";
+
+AccessibilityModule(Highcharts);
 
 function linearSplineInterpolation(x, x0, x1, y0, y1) {
   return y0 + (y1 - y0) * ((x - x0) / (x1 - x0));
@@ -58,7 +61,7 @@ const YieldCurve = () => {
     }
   };
 
-  const [businessDate, setBusinessDate] = useState();
+  const [businessDate, setBusinessDate] = useState("2023-05-20");
   const [targetDate, setTargetDate] = useState(null);
   const [interpolatedYield, setInterpolatedYield] = useState(null);
   const [maturities, setMaturities] = useState([]);
@@ -82,7 +85,7 @@ const YieldCurve = () => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate") // kendi apime istek atıyorum
+      .get("http://localhost:8080/api/yieldcurve/calculate") // kendi apime istek atıyorum
       .then((response) => {
         setMaturities(response.data.maturities);
 
@@ -94,22 +97,13 @@ const YieldCurve = () => {
   }, []);
 
   useEffect(() => {
-    //"https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity"
+    //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get(
-        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity",
-        {
-          withCredentials: true,
-        }
-      ) // kendi apime istek atıyorum
+      .get("http://localhost:8080/api/yieldcurve/calculateMaturity") // kendi apime istek atıyorum
       .then((response) => {
-        //setBusinessDate(response.data.maturityDates);
-        const maturityDates = JSON.stringify(response.data.maturityDates);
-        const maturityDates2 = JSON.parse(maturityDates);
-        const firstMaturityDate = maturityDates2[0];
-        setBusinessDate(firstMaturityDate); // business date tarihini apiden çekiyoruz.
-        console.log("hata kontrol" + firstMaturityDate);
+        setBusinessDate(response.data.maturityDates[0]);
+        console.log("apiden gelen veri:", response.data.maturityDates[0]);
       })
       .catch((error) => {
         console.log("Error fetching data:", error);
