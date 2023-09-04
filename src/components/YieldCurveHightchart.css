@@ -19,6 +19,7 @@
 .FileSelectandSend {
   display: flex;
   width: 800px;
+  flex-direction: column;
 }
 
 .yieldcurve .dates .FileSelectandSend .fileSelect {

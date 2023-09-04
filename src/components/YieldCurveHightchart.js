@@ -274,6 +274,19 @@ const YieldCurve = () => {
   return (
     <div className="yieldcurve">
       <div className="dates">
+        <div className="FileSelectandSend">
+          <label>Select File: </label>
+          <input
+            className="fileSelect"
+            type="file"
+            //onChange={handleFileChange} <div id="fileName"></div>
+            id="fileInput"
+          />
+
+          <button className="sendButton" onClick={sendFile}>
+            Send File
+          </button>
+        </div>
         <div className="RangeSelectBox">
           <label>Select Range: </label>
           <p> </p>
@@ -310,19 +323,6 @@ const YieldCurve = () => {
         {renderInterpolatedData()}
       </div>
       <div className="graph">
-        <div className="FileSelectandSend">
-          <label>Select File: </label>
-          <input
-            className="fileSelect"
-            type="file"
-            //onChange={handleFileChange} <div id="fileName"></div>
-            id="fileInput"
-          />
-
-          <button className="sendButton" onClick={sendFile}>
-            Send File
-          </button>
-        </div>
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
     </div>
