@@ -69,40 +69,46 @@ const YieldCurve = () => {
   const [seriesData, setSeriesData] = useState([]); // Yeni state değişkeni
   const [lowTargetYear, setLowTargetYear] = useState(null);
   const [highTargetYear, setHighTargetYear] = useState(null);
+  const [shouldUpdateGraph, setShouldUpdateGraph] = useState(true);
+  const [dataFetched, setDataFetched] = useState(true);
 
   const handleRangeChange = (e) => {
     if (e.target.value === "All") {
       setLowTargetYear(null);
       setHighTargetYear(null);
+      setDataFetched(true);
     } else {
       const [low, high] = e.target.value.split("-").map(Number);
       setLowTargetYear(low);
       setHighTargetYear(high);
+      setDataFetched(true);
     }
   };
 
   useEffect(() => {
-    //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
-    axios
-      //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate") // kendi apime istek atıyorum
-      .then((response) => {
-        setMaturities(response.data.maturities);
-
-        setYieldToMaturity(response.data.yields);
-      })
-      .catch((error) => {
-        console.log("Error fetching data:", error);
-      });
-  }, []);
+    if (shouldUpdateGraph) {
+      //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
+      axios
+        //.get("http://localhost:8080/api/yieldcurve/calculate")
+        .get("http://localhost:8080/api/yieldcurve/calculate") // kendi apime istek atıyorum
+        .then((response) => {
+          setYieldToMaturity(response.data.yields);
+          setMaturities(response.data.maturities);
+          setDataFetched(true); // silinebilir
+          //setBusinessDate(response.data.maturityDates[0]);
+        })
+        .catch((error) => {
+          console.log("Error fetching data:", error);
+        });
+      setShouldUpdateGraph(false);
+    }
+  }, [shouldUpdateGraph]);
 
   useEffect(() => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get(
-        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity"
-      ) // kendi apime istek atıyorum
+      .get("http://localhost:8080/api/yieldcurve/calculateMaturity") // kendi apime istek atıyorum
       .then((response) => {
         setBusinessDate(response.data.maturityDates[0]);
         console.log("apiden gelen veri:", response.data.maturityDates[0]);
@@ -113,28 +119,34 @@ const YieldCurve = () => {
   }, []);
 
   useEffect(() => {
-    let newSeriesData;
+    if (dataFetched) {
+      let newSeriesData;
 
-    if (lowTargetYear == null && highTargetYear == null) {
-      newSeriesData = maturities.map((maturity, index) => {
-        return { x: maturity, y: yieldToMaturity[index] };
-      });
-    } else {
-      const newMaturities = [];
-      const newYieldToMaturity = [];
-      for (let i = 0; i < maturities.length; i++) {
-        if (maturities[i] >= lowTargetYear && maturities[i] <= highTargetYear) {
-          newMaturities.push(maturities[i]);
-          newYieldToMaturity.push(yieldToMaturity[i]);
+      if (lowTargetYear == null && highTargetYear == null) {
+        newSeriesData = maturities.map((maturity, index) => {
+          return { x: maturity, y: yieldToMaturity[index] };
+        });
+      } else {
+        const newMaturities = [];
+        const newYieldToMaturity = [];
+        for (let i = 0; i < maturities.length; i++) {
+          if (
+            maturities[i] >= lowTargetYear &&
+            maturities[i] <= highTargetYear
+          ) {
+            newMaturities.push(maturities[i]);
+            newYieldToMaturity.push(yieldToMaturity[i]);
+          }
         }
+        newSeriesData = newMaturities.map((maturity, index) => {
+          return { x: maturity, y: newYieldToMaturity[index] };
+        });
       }
-      newSeriesData = newMaturities.map((maturity, index) => {
-        return { x: maturity, y: newYieldToMaturity[index] };
-      });
-    }
 
-    setSeriesData(newSeriesData);
-  }, [maturities, yieldToMaturity, lowTargetYear, highTargetYear]);
+      setSeriesData(newSeriesData);
+      setDataFetched(false); // silinebilir
+    }
+  }, [maturities, yieldToMaturity, lowTargetYear, highTargetYear, dataFetched]);
 
   console.log("maturities: " + maturities);
   console.log("yieldToMaturity: " + yieldToMaturity);
@@ -173,6 +185,46 @@ const YieldCurve = () => {
     setInterpolatedYield(interpolatedYield);
   }, [targetMaturity, maturities, yieldToMaturity]);
 
+  /*
+  const handleFileChange = (e) => {
+    const fileInput = e.target;
+    const fileNameDiv = document.getElementById("fileName");
+    if (fileInput.files && fileInput.files.length > 0) {
+      fileNameDiv.textContent = fileInput.files[0].name;
+    }
+  };
+  */
+
+  const sendFile = async () => {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        const fileContent = event.target.result;
+        console.log("fileContent: " + fileContent);
+
+        // Axios ile API'ye POST isteği gönder
+        try {
+          const response = await axios.post(
+            "http://localhost:8080/api/yieldcurve/uploadFile",
+            { fileContent },
+            {
+              contentType: "application/json",
+            }
+          );
+          console.log("Response:", response.data);
+
+          setShouldUpdateGraph(true); // Değişkeni güncelleyin
+        } catch (error) {
+          console.error("An error occurred:", error);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
   const options = {
     chart: {
       // Animation: true,
@@ -258,6 +310,19 @@ const YieldCurve = () => {
         {renderInterpolatedData()}
       </div>
       <div className="graph">
+        <div className="FileSelectandSend">
+          <label>Select File: </label>
+          <input
+            className="fileSelect"
+            type="file"
+            //onChange={handleFileChange} <div id="fileName"></div>
+            id="fileInput"
+          />
+
+          <button className="sendButton" onClick={sendFile}>
+            Send File
+          </button>
+        </div>
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
     </div>

@@ -8,11 +8,37 @@
   background-color: #c7d6d6;
   border: 1px solid #ccc;
 }
+
 .yieldcurve .dates {
   width: 200px;
   border: 1px solid #ccc;
   border-radius: 12px;
   background-color: "#EFF8F8";
+}
+
+.FileSelectandSend {
+  display: flex;
+  width: 800px;
+}
+
+.yieldcurve .dates .FileSelectandSend .fileSelect {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left: 10px;
+  height: 35px;
+  width: 132px;
+  margin-top: -6px;
+  margin-bottom: 7px;
+}
+
+.yieldcurve .dates .sendButton {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-left: 10px;
+  height: 35px;
+  width: 132px;
+  margin-top: -6px;
+  margin-bottom: 7px;
 }
 
 .yieldcurve .dates .interpolatedData {
