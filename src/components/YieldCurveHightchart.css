@@ -1,10 +1,12 @@
-/* Ana konteyner için stil */
+/* Ana konteyner için stil
+background-color: #c7d6d6; */
 .yieldcurve {
   padding: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 100px;
+
   background-color: #c7d6d6;
   border: 1px solid #ccc;
 }
@@ -22,6 +24,9 @@
   flex-direction: column;
 }
 
+.SelectFileLabel {
+  margin-bottom: 10px;
+}
 .yieldcurve .dates .FileSelectandSend .fileSelect {
   border: 1px solid #ccc;
   border-radius: 5px;

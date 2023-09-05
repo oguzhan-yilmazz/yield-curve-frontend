@@ -6,7 +6,7 @@ import moment from "moment";
 import axios from "axios";
 import AccessibilityModule from "highcharts/modules/accessibility";
 
-AccessibilityModule(Highcharts);
+AccessibilityModule(Highcharts); // chrome tarafındakş uyarıyı gidermek için eklendi
 
 function linearSplineInterpolation(x, x0, x1, y0, y1) {
   return y0 + (y1 - y0) * ((x - x0) / (x1 - x0));
@@ -79,6 +79,7 @@ const YieldCurve = () => {
       setDataFetched(true);
     } else {
       const [low, high] = e.target.value.split("-").map(Number);
+      // diğer use effectlerin de çalışması için onları tetikletiyoruz
       setLowTargetYear(low);
       setHighTargetYear(high);
       setDataFetched(true);
@@ -225,13 +226,16 @@ const YieldCurve = () => {
       reader.readAsText(file);
     }
   };
+
+  //backgroundColor: "#EFF8F8",
   const options = {
     chart: {
       // Animation: true,
       height: 680, // Yükseklik 700px olarak ayarlandı
       width: 960, // Genişlik 1000px olarak ayarlandı
       borderRadius: 10, // Kenar yuvarlaklığı 10px olarak ayarland
-      backgroundColor: "#EFF8F8", // Arka plan rengi ayarlandı
+      // Arka plan rengi ayarlandı
+      backgroundColor: "#F0F5F5",
     },
     title: {
       text: `Yield Curve starting from ${businessDate}`,
@@ -275,7 +279,7 @@ const YieldCurve = () => {
     <div className="yieldcurve">
       <div className="dates">
         <div className="FileSelectandSend">
-          <label>Select File: </label>
+          <label style={{ marginBottom: "10px" }}>Select File: </label>
           <input
             className="fileSelect"
             type="file"
