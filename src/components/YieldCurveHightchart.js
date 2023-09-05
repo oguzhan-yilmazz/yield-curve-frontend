@@ -257,7 +257,7 @@ const YieldCurve = () => {
         // Axios ile API'ye POST isteği gönder
         try {
           const response = await axios.post(
-            "http://localhost:8080/api/yieldcurve/uploadFile",
+            "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/uploadFile",
             { fileContent },
             {
               contentType: "application/json",
