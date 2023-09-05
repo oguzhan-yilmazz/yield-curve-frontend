@@ -52,7 +52,7 @@ const YieldCurve = () => {
           <strong>
             Interpolated Yield for Target Date: {interpolatedYield.toFixed(2)}%
             <h1> </h1>
-            Maturity : {targetMaturity} years.hi
+            Maturity : {targetMaturity} years.
           </strong>
         </div>
       );
@@ -67,6 +67,7 @@ const YieldCurve = () => {
   const [maturities, setMaturities] = useState([]);
   const [yieldToMaturity, setYieldToMaturity] = useState([]);
   const [seriesData, setSeriesData] = useState([]); // Yeni state değişkeni
+  const [seriesDataNew, setSeriesDataNew] = useState([]); // silincekkkk
   const [lowTargetYear, setLowTargetYear] = useState(null);
   const [highTargetYear, setHighTargetYear] = useState(null);
   const [shouldUpdateGraph, setShouldUpdateGraph] = useState(true);
@@ -105,6 +106,7 @@ const YieldCurve = () => {
     }
   }, [shouldUpdateGraph]);
 
+  /*
   useEffect(() => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
     axios
@@ -113,6 +115,22 @@ const YieldCurve = () => {
       .then((response) => {
         setBusinessDate(response.data.maturityDates[0]);
         console.log("apiden gelen veri:", response.data.maturityDates[0]);
+      })
+      .catch((error) => {
+        console.log("Error fetching data:", error);
+      });
+  }, []);
+
+  */
+
+  useEffect(() => {
+    //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
+    axios
+      //.get("http://localhost:8080/api/yieldcurve/calculate")
+      .get("http://localhost:8080/api/yieldcurve/businessDate") // kendi apime istek atıyorum
+      .then((response) => {
+        setBusinessDate(response.data.businessDate);
+        console.log("apiden gelen veri:", response.data.businessDate);
       })
       .catch((error) => {
         console.log("Error fetching data:", error);
@@ -182,7 +200,32 @@ const YieldCurve = () => {
         break;
       }
     }
+    // silincekkk asagı
+    let newData = [
+      {
+        x: targetMaturity,
+        y: interpolatedYield,
+        marker: {
+          fillColor: "red",
+          radius: 8,
+          enabled: true,
+          shape: "circular",
+        },
+        dataLabels: {
+          enabled: true,
+          format: "yield:{point.y}",
+          shape: "circular", // şekli belirtin
+          backgroundColor: "rgba(255, 255, 255, 0.6)", // arka plan rengi
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "gray",
+        },
+      },
+    ];
 
+    setSeriesDataNew(newData);
+
+    // silincek yukarı
     setInterpolatedYield(interpolatedYield);
   }, [targetMaturity, maturities, yieldToMaturity]);
 
@@ -271,6 +314,12 @@ const YieldCurve = () => {
             );
           },
         },
+      },
+
+      {
+        data: seriesDataNew,
+        type: "line",
+        color: "#ff00ff",
       },
     ],
   };
