@@ -6,7 +6,7 @@ import moment from "moment";
 import axios from "axios";
 import AccessibilityModule from "highcharts/modules/accessibility";
 
-AccessibilityModule(Highcharts); // chrome tarafındakş uyarıyı gidermek için eklendi
+AccessibilityModule(Highcharts); // chrome tarafındaki uyarıyı gidermek için eklendi
 
 function linearSplineInterpolation(x, x0, x1, y0, y1) {
   return y0 + (y1 - y0) * ((x - x0) / (x1 - x0));
@@ -92,7 +92,9 @@ const YieldCurve = () => {
       //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate
       axios
         //.get("http://localhost:8080/api/yieldcurve/calculate")
-        .get("http://localhost:8080/api/yieldcurve/calculate") // kendi apime istek atıyorum
+        .get(
+          "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculate"
+        ) // kendi apime istek atıyorum
         .then((response) => {
           setYieldToMaturity(response.data.yields);
           setMaturities(response.data.maturities);
@@ -127,7 +129,9 @@ const YieldCurve = () => {
     //https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/calculateMaturity
     axios
       //.get("http://localhost:8080/api/yieldcurve/calculate")
-      .get("http://localhost:8080/api/yieldcurve/businessDate") // kendi apime istek atıyorum
+      .get(
+        "https://yield-153eacdc3ce4.herokuapp.com/api/yieldcurve/businessDate"
+      ) // kendi apime istek atıyorum
       .then((response) => {
         setBusinessDate(response.data.businessDate);
         console.log("apiden gelen veri:", response.data.businessDate);
